@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>テスト攻略ログ V28</title>
+<link rel="apple-touch-icon" href="IMG_5878.jpeg">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{
+ --bg:#fdfcf0;--pink:#ffafcc;--pink2:#ff8fab;--blue:#a2d2ff;--blue2:#72aee6;
+ --green:#b7e4c7;--yellow:#ffe57f;--text:#5d5d5d;--card:#fff;--line:#eee;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;background:var(--bg);color:var(--text);margin:0;padding:env(safe-area-inset-top) 12px 95px;text-align:center}
+button,input,select,textarea{font:inherit}
+button{touch-action:manipulation}
+.hidden{display:none!important}
+.app-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 2px 14px}
+.app-header h1{font-size:1.18rem;margin:0;color:#ff6b8b}
+.icon-btn{width:42px;height:42px;border:0;border-radius:15px;background:#fff;box-shadow:0 3px 0 #eee;font-size:1.15rem}
+.screen{display:none}.screen.active{display:block}
+.card{background:#fff;border:3px solid var(--pink);border-radius:28px;padding:18px;margin-bottom:16px;box-shadow:0 6px 0 #eee}
+.card.blue{border-color:var(--blue)}
+.card-title{font-size:1.05rem;font-weight:900;margin:0 0 12px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.small{font-size:.8rem;color:#888}
+.primary{background:var(--pink);color:#fff;border:0;border-radius:18px;padding:13px 20px;font-weight:900;box-shadow:0 5px 0 var(--pink2)}
+.secondary{background:var(--blue);color:#fff;border:0;border-radius:16px;padding:11px 15px;font-weight:900;box-shadow:0 4px 0 var(--blue2)}
+.green{background:#2ecc71;color:#fff;border:0;border-radius:15px;padding:11px 15px;font-weight:900;box-shadow:0 4px 0 #27ae60}
+.danger{background:#f1f5f9;color:#64748b;border:2px solid #cbd5e1;border-radius:14px;padding:9px 12px;font-weight:900}
+.full{width:100%}
+.wide{width:100%}
+input[type=text],input[type=date],select,textarea{width:100%;border:1px solid #ddd;border-radius:11px;padding:10px;background:#fff;color:var(--text)}
+textarea{min-height:95px;resize:vertical}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
+.chip{display:inline-block;padding:5px 9px;border-radius:999px;background:#fff0f5;font-size:.75rem;font-weight:900}
+.hero-count{background:#ffc8dd;border-radius:25px;padding:18px;color:#fff;box-shadow:0 5px 0 var(--pink);margin-bottom:16px}
+.hero-count .label{font-size:.88rem;font-weight:900}.hero-count .days{font-size:1.8rem;font-weight:900;margin:4px 0}
+.hero-count .date{font-size:.85rem}
+.stat-big{font-size:2rem;font-weight:900;color:var(--pink2)}
+.breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.badge{background:#fff8fa;border:1px dashed var(--pink);border-radius:12px;padding:7px 3px;font-size:.7rem;font-weight:900}
+.timer-display{font-size:3.2rem;font-weight:900;color:var(--pink2);font-variant-numeric:tabular-nums;margin:6px 0}
+.timer-status{font-size:.8rem;color:#999;margin-bottom:8px}
+.presets{display:flex;justify-content:center;gap:7px}.preset{background:var(--blue);color:#fff;border:0;padding:9px 13px;border-radius:14px;font-weight:900;box-shadow:0 3px 0 var(--blue2)}
+.subject-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}
+.subject-btn{background:#fff;border:2px solid #ddd;border-radius:16px;padding:9px 4px;min-height:58px;font-size:.72rem;font-weight:900}
+.subject-btn.active{background:var(--pink);color:#fff;border-color:var(--pink2);box-shadow:0 3px 0 var(--pink2)}
+.sound{display:flex;align-items:center;justify-content:center;gap:7px;font-size:.8rem;margin:9px}
+.switch{position:relative;display:inline-block;width:44px;height:24px}.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#ccc;border-radius:24px}.slider:before{content:"";position:absolute;width:16px;height:16px;left:4px;bottom:4px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+.slider{background:var(--pink2)}.switch input:checked+.slider:before{transform:translateX(20px)}
+.time-scroll{overflow-x:auto}.time-table{border-collapse:collapse;width:100%;min-width:480px;font-size:.65rem}.time-table th,.time-table td{border:1px solid #ddd;padding:4px;text-align:center}.time-table th{background:#f8f8f8}.fill{height:18px;width:100%}
+.progress-summary{background:#fff8fa;border:2px dashed var(--pink);border-radius:18px;padding:12px;text-align:left;margin-top:10px}
+.progress-row{margin:9px 0}.progress-label{display:flex;justify-content:space-between;font-size:.8rem;font-weight:900}.bar{height:10px;background:#eee;border-radius:99px;overflow:hidden;margin-top:4px}.bar>i{display:block;height:100%;background:var(--pink);border-radius:99px}
+.calendar-head{display:flex;justify-content:space-between;align-items:center}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #ffc8dd;border-radius:9px;font-size:.75rem;position:relative}
+.cal-day.today{border:3px solid var(--blue)}.cal-day.test{background:var(--blue);color:#fff;font-weight:900}.cal-day.w1{background:var(--pink);color:#fff}.cal-day.w2{background:var(--yellow)}.cal-day.w3{background:var(--green)}
+.cal-day.has-data:after{content:"";position:absolute;bottom:3px;width:5px;height:5px;background:var(--pink2);border-radius:50%}
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);font-size:.7rem;font-weight:900;color:#888}
+details{background:#fff;border:2px dashed var(--blue);border-radius:16px;padding:10px;text-align:left}details summary{font-weight:900;cursor:pointer}
+.nav{position:fixed;z-index:5000;left:8px;right:8px;bottom:8px;padding:7px 4px calc(7px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border:2px solid var(--pink);border-radius:22px;box-shadow:0 5px 20px rgba(0,0,0,.12);display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.nav button{border:0;background:transparent;color:#777;font-size:.67rem;font-weight:900;padding:6px 2px;border-radius:12px}.nav button.active{background:#fff0f5;color:var(--pink2)}
+.modal{display:none;position:fixed;z-index:6000;inset:0;background:rgba(0,0,0,.55);overflow:auto;padding:18px 10px 100px}.modal.open{display:block}
+.modal-panel{background:var(--bg);max-width:620px;margin:20px auto;border-radius:26px;padding:18px;text-align:center;border:3px solid var(--pink)}
+.modal.blue-modal .modal-panel{background:var(--pink);border-color:#fff;color:#fff}
+.modal-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#fff;border-radius:50%;width:38px;height:38px;font-weight:900}
+.task-group{background:#fff;border-radius:18px;padding:13px;margin:10px 0;text-align:left}.task-row{display:flex;gap:6px;align-items:center;margin:8px 0}.task-row input{flex:1}.checks{display:flex;gap:3px}.check{width:25px;height:25px;border:2px solid var(--pink);border-radius:7px;background:#fff}.check.checked{background:var(--pink)}.check.checked:after{content:"✓";color:#fff;font-weight:900}
+.test-item{display:flex;gap:7px;margin-bottom:9px}.test-item .open-test{flex:1;text-align:left}
+.setting-item{display:flex;gap:8px;align-items:center;background:#fff;border:2px solid #ddd;border-radius:14px;padding:8px;margin:7px 0}.setting-item input[type=text]{flex:1}
+.color{width:35px;height:35px;border:0;padding:0;background:transparent}
+.empty{padding:16px;color:#999;background:#fff;border-radius:15px}
+.reflection{background:#fff;border:3px solid var(--pink);border-radius:18px;padding:13px;margin:10px 0;text-align:left}
+.ext-scroll{overflow:auto}.extended{border-collapse:collapse;min-width:2400px;font-size:.6rem}.extended th,.extended td{border:1px solid #ddd;padding:3px;text-align:center}.extended .fill{height:17px}
+.guide-box{background:#fff;border:2px dashed var(--blue);border-radius:18px;padding:14px;text-align:left;font-size:.84rem;line-height:1.65}
+#welcome{position:fixed;z-index:9999;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;background-image:radial-gradient(#ffafcc 15%,transparent 15%),radial-gradient(#ffafcc 15%,transparent 15%);background-size:20px 20px;background-position:0 0,10px 10px;transition:.6s}
+#welcome.hide{transform:scale(2.5);opacity:0;pointer-events:none}.icon-box{width:140px;height:140px;border-radius:35px;overflow:hidden;border:4px solid #fff;background:#fff;box-shadow:0 8px 20px rgba(255,175,204,.4)}.icon-box img{width:100%;height:100%;object-fit:cover}
+.welcome-title{font-size:2.55rem;color:#ff6b8b;font-weight:900;margin:15px 0;text-shadow:3px 3px #fff,-3px -3px #fff,3px -3px #fff,-3px 3px #fff}
+.bubble{background:#fff;border:3px solid var(--pink);border-radius:25px;padding:14px 20px;max-width:85%;font-weight:900;box-shadow:0 5px 0 var(--pink);margin-bottom:28px}
+.enter{background:var(--pink);color:#fff;border:0;border-radius:35px;padding:17px 42px;font-size:1.25rem;font-weight:900;box-shadow:0 6px 0 var(--pink2)}
+footer{font-size:.75rem;color:#aaa;margin:30px 0 10px}
+@media(min-width:700px){body{max-width:680px;margin:auto}.nav{max-width:660px;left:50%;right:auto;transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+
+<div id="welcome">
+  <div class="icon-box"><img src="IMG_5878.jpeg" alt="テスト攻略ログ" onerror="this.style.display='none'"></div>
+  <h1 class="welcome-title">テスト攻略ログ</h1>
+  <div class="bubble">👩‍🏫「目標を設定して、15分ずつの積み重ねでテストを攻略しよう！」</div>
+  <button class="enter" onclick="enterApp()">はじめる</button>
+</div>
+
+<div id="guideModal" class="modal">
+ <div class="modal-panel" style="max-width:390px">
+  <h2>📱 はじめに</h2>
+  <p style="text-align:left;line-height:1.7">勉強中に画面が自動で消えないようにする場合は、<br><strong>設定 → 画面表示と明るさ → 自動ロック → なし</strong><br>にしてください。</p>
+  <button class="primary" onclick="closeGuide()">OK</button>
+ </div>
+</div>
+
+<header class="app-header">
+ <h1>📚 テスト攻略ログ</h1>
+ <button class="icon-btn" onclick="showScreen('settings')">⚙️</button>
+</header>
+
+<main>
+<section id="home" class="screen active">
+ <div class="hero-count">
+  <div class="label">🚀 次のテスト</div>
+  <div id="nextTestName" class="small" style="color:#fff">テストを設定してください</div>
+  <div id="countdownDisplay" class="days">テスト日を設定</div>
+  <div id="nextTestDate" class="date"></div>
+  <input type="date" id="test-date-picker" onchange="updateTestDate(this.value)" style="position:absolute;opacity:0;pointer-events:none">
+  <button class="secondary" style="margin-top:8px;background:#fff;color:#ff8fab;box-shadow:none" onclick="document.getElementById('test-date-picker').showPicker?.();document.getElementById('test-date-picker').click()">📅 テスト日を設定</button>
+ </div>
+
+ <div class="card">
+  <h2 class="card-title">☀️ 今日の勉強</h2>
+  <div id="todayTotal" class="stat-big">0分</div>
+  <div id="todayBreakdown" class="breakdown"></div>
+  <button class="secondary full" style="margin-top:10px" onclick="scrollToId('today-record')">📊 今日の記録を見る</button>
+ </div>
+
+ <div class="card" id="timerCard">
+  <h2 class="card-title">⏱️ 勉強タイマー</h2>
+  <div id="timer-display" class="timer-display">00:15:00</div>
+  <div id="timer-status" class="timer-status">停止中</div>
+  <div class="presets"><button class="preset" onclick="initTimer(15)">15分</button><button class="preset" onclick="initTimer(30)">30分</button><button class="preset" onclick="initTimer(60)">1時間</button></div>
+  <div class="sound"><span>🔔 15分ごとの音通知</span><label class="switch"><input type="checkbox" id="sound-toggle" checked onchange="saveSound()"><span class="slider"></span></label></div>
+  <div id="subject-buttons" class="subject-grid"></div>
+  <button id="start-btn" class="primary full" onclick="toggleTimer()">▶ START</button>
+  <button id="reset-btn" class="secondary full" style="margin-top:10px" onclick="resetTimer()">↺ タイマーをリセット</button>
+ </div>
+
+ <div class="card blue">
+  <div class="section-head"><h2 class="card-title">📖 テスト攻略</h2><span id="homeProgressHint" class="chip">まずは設定</span></div>
+  <div id="homeProgress"></div>
+  <button class="secondary full" style="margin-top:10px" onclick="showScreen('strategy')">🏁 攻略メーターを開く</button>
+ </div>
+
+ <div id="today-record" class="card">
+  <div class="section-head"><h2 class="card-title">📊 今日の詳細記録</h2><span class="small">1マス15分</span></div>
+  <div id="live-counters" class="breakdown"></div>
+  <div class="time-scroll" style="margin-top:10px"><div id="time-grid-root"></div></div>
+  <h3 style="margin:16px 0 8px">🕸 教科バランス</h3>
+  <canvas id="radarChart"></canvas>
+ </div>
+</section>
+
+<section id="strategy" class="screen">
+ <div class="card blue">
+  <h2 class="card-title">📖 テスト攻略</h2>
+  <p class="small">テスト範囲を教科ごとに登録し、3・4・5周の進み具合を管理できます。</p>
+  <label style="display:block;text-align:left;font-weight:900;margin:10px 0 5px">📋 対象のテスト</label>
+  <select id="task-test-period-select" onchange="switchTaskPeriod(this.value)"></select>
+  <div class="rep-selector row" style="margin-top:10px">
+   <button class="preset" onclick="setGlobalRep(3)">3回</button><button class="preset" onclick="setGlobalRep(4)">4回</button><button class="preset" onclick="setGlobalRep(5)">5回</button>
+  </div>
+  <div id="strategy-progress" class="progress-summary"></div>
+ </div>
+ <div id="task-container"></div>
+ <button class="primary full" onclick="saveAndCloseTasks()">閉じて保存する</button>
+</section>
+
+<section id="calendar" class="screen">
+ <div class="card">
+  <div class="calendar-head"><button class="preset" onclick="changeMonth(-1)">◀</button><h2 id="cal-month-title" class="card-title" style="margin:0"></h2><button class="preset" onclick="changeMonth(1)">▶</button></div>
+  <div class="weekdays" style="margin-top:10px"><span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span></div>
+  <div id="cal-grid" class="calendar-grid"></div>
+  <details style="margin-top:14px"><summary>🎨 カレンダーの色について</summary><p class="small">🔵 テスト期間　🩷 1週間前　🟡 2週間前　🟢 3週間前　● 勉強記録あり</p></details>
+ </div>
+ <div class="card">
+  <h2 class="card-title">📝 テスト期間を登録</h2>
+  <input id="test-period-name" type="text" placeholder="例：第1回定期テスト">
+  <div class="row" style="margin-top:8px"><input id="test-start" type="date"><span>〜</span><input id="test-end" type="date"></div>
+  <button class="green full" style="margin-top:10px" onclick="addTestPeriod()">期間をカレンダーに登録</button>
+ </div>
+ <div class="card">
+  <h2 class="card-title">📝 テストを振り返る</h2>
+  <p class="small">テスト期間ごとの勉強時間と、教科別の振り返りを確認できます。</p>
+  <button class="primary full" onclick="openReportModal()">テストを振り返る →</button>
+ </div>
+</section>
+
+<section id="reflection" class="screen">
+ <div class="card">
+  <h2 class="card-title">📝 テストを振り返る</h2>
+  <div id="reflection-list"></div>
+ </div>
+</section>
+
+<section id="settings" class="screen">
+ <div class="card">
+  <h2 class="card-title">⚙️ 設定</h2>
+  <h3 style="text-align:left">🎨 教科設定</h3>
+  <div id="setting-list"></div>
+  <button class="secondary full" onclick="addSub()">＋ 教科を追加</button>
+ </div>
+ <div class="card">
+  <h3 class="card-title">📅 カウントダウン表示期間</h3>
+  <select id="countdown-period-select" onchange="updateCountdownPeriod(this.value)">
+   <option value="3">3週間前から表示</option><option value="2">2週間前から表示</option><option value="1">1週間前から表示</option>
+  </select>
+ </div>
+ <div class="card">
+  <h3 class="card-title">🔔 タイマー音</h3>
+  <div class="sound"><span>15分ごとの音通知</span><label class="switch"><input type="checkbox" id="sound-toggle-settings" onchange="syncSound(this.checked)"><span class="slider"></span></label></div>
+ </div>
+ <div class="card">
+  <h3 class="card-title">📖 使い方</h3>
+  <div class="guide-box">
+   <p><strong>1. 日々の勉強を記録</strong><br>教科を選び、タイマーをSTART。勉強時間が自動で記録されます。</p>
+   <p><strong>2. テスト範囲を攻略</strong><br>「攻略」でテストごとのやることリストを作り、周回数をチェックします。</p>
+   <p><strong>3. カレンダーで確認</strong><br>勉強した日をタップすると、その日の記録を確認できます。</p>
+   <p><strong>4. テスト後に振り返る</strong><br>テスト期間の勉強時間と教科別の振り返りを残せます。</p>
+   <p><strong>⚠️ タイマー中に教科を変更する場合</strong><br>一度STOPしてから教科を変更し、再度STARTしてください。</p>
+  </div>
+ </div>
+ <footer>© 2026 Amity<br>All Rights Reserved.</footer>
+</section>
+</main>
+
+<nav class="nav">
+ <button data-screen="home" onclick="showScreen('home')">🏠<br>ホーム</button>
+ <button data-screen="strategy" onclick="showScreen('strategy')">📖<br>攻略</button>
+ <button data-screen="calendar" onclick="showScreen('calendar')">📅<br>カレンダー</button>
+ <button data-screen="reflection" onclick="showScreen('reflection')">📝<br>振り返り</button>
+ <button data-screen="settings" onclick="showScreen('settings')">⚙️<br>設定</button>
+</nav>
+
+<div id="dayModal" class="modal"><div class="modal-panel"><div class="modal-head"><h2 id="day-title">日付の記録</h2><button class="close" onclick="closeModal('dayModal')">×</button></div><div id="day-content"></div></div></div>
+
+<div id="reportModal" class="modal"><div class="modal-panel"><div class="modal-head"><h2>📝 テストを振り返る</h2><button class="close" onclick="closeModal('reportModal')">×</button></div><div id="test-period-list"></div></div></div>
+
+<div id="testDetailModal" class="modal"><div class="modal-panel"><div class="modal-head"><h2 id="detail-test-title">テスト詳細</h2><button class="close" onclick="closeTestDetail()">×</button></div>
+ <div class="card blue"><h3>📊 期間中の勉強時間</h3><div class="ext-scroll" id="period-time-grid-root"></div></div>
+ <div id="detail-subject-list"></div>
+ <button class="secondary full" onclick="closeTestDetail()">一覧へ戻る</button>
+</div></div>
+
+<script>
+/* =========================
+   V28 data / migration
+========================= */
+const STORAGE_KEY='studyLogStable';
+const BACKUP_KEY='studyLogStable_V28_backup';
+const LEGACY_PREFIX='__v27';
+let db=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+
+if(!db.subjects) db.subjects=[
+ {id:'kokugo',name:'文学国語',color:'#e83e8c',icon:'📖'},
+ {id:'sugaku',name:'数学探究',color:'#00bcd4',icon:'📐'},
+ {id:'kagaku',name:'科学',color:'#8bc34a',icon:'🔬'},
+ {id:'seikei',name:'政治経済',color:'#ff5722',icon:'⚖️'},
+ {id:'nihonshi',name:'日本史探究',color:'#ff9800',icon:'🏯'},
+ {id:'eikomi',name:'英コミ',color:'#9c27b0',icon:'💬'},
+ {id:'kateika',name:'家庭科',color:'#2196f3',icon:'🍳'},
+ {id:'chiri',name:'地理',color:'#4caf50',icon:'🗺️'},
+ {id:'hoken',name:'保健体育',color:'#795548',icon:'🏃'}
+];
+if(!db.history)db.history={};
+if(!db.tasks)db.tasks={};
+if(!db.periodTasks)db.periodTasks={};
+if(!db.testPeriods)db.testPeriods=[];
+if(db.countdownDisplayPeriod===undefined)db.countdownDisplayPeriod=1;
+if(db.testDate===undefined)db.testDate='';
+if(db.globalRepGoal===undefined)db.globalRepGoal=3;
+
+function pad(n){return String(n).padStart(2,'0')}
+function dateKey(d=new Date()){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+function parseDateKey(k){const a=k.split('-').map(Number);return new Date(a[0],a[1]-1,a[2])}
+function escapeHTML(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function migrate(){
+  const migrated=localStorage.getItem('studyLogStable_V28_migrated');
+  if(!migrated){
+    try{localStorage.setItem(BACKUP_KEY,JSON.stringify(db));}catch(e){}
+    // V27's locale date keys are converted to stable YYYY-MM-DD keys.
+    const h={};
+    Object.entries(db.history||{}).forEach(([k,v])=>{
+      let key=k;
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(k)){
+        const d=new Date(k);
+        if(!isNaN(d.getTime())) key=dateKey(d);
+      }
+      h[key]=Object.assign(h[key]||{},v);
+    });
+    db.history=h;
+    // Give every test period a stable ID while retaining all original properties.
+    db.testPeriods=(db.testPeriods||[]).map((t,i)=>({...t,id:t.id||`test_${Date.now()}_${i}_${Math.random().toString(36).slice(2,7)}`}));
+    // Move legacy periodTasks from numeric indices to stable IDs where possible.
+    const pt={};
+    Object.entries(db.periodTasks||{}).forEach(([k,v])=>{
+      const idx=Number(k); const t=db.testPeriods[idx];
+      if(t) pt[t.id]=v;
+    });
+    if(Object.keys(pt).length)db.periodTasks=pt;
+    localStorage.setItem('studyLogStable_V28_migrated','1');
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(db));
+  }else{
+    // Safety normalization for later loads.
+    db.testPeriods=(db.testPeriods||[]).map((t,i)=>({...t,id:t.id||`test_legacy_${i}`}));
+  }
+}
+migrate();
+
+let currentSubject=db.subjects[0]?.id||'';
+let timerSeconds=900,presetSeconds=900,timerInterval=null,isRunning=false;
+let calViewDate=new Date(),selectedTaskPeriodId='default',audioCtx=null,radarChart=null,detailTestId=null;
+
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(db))}
+function initAudio(){try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume()}catch(e){}}
+function playAlertSound(){
+ if(!document.getElementById('sound-toggle')?.checked)return;
+ try{initAudio();const now=audioCtx.currentTime;[0,.12,.35,.47].forEach((t,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=1760;g.gain.setValueAtTime(.35,now+t);g.gain.exponentialRampToValueAtTime(.01,now+t+.07);o.connect(g);g.connect(audioCtx.destination);o.start(now+t);o.stop(now+t+.07)})}catch(e){}
+}
+function enterApp(){initAudio();document.getElementById('guideModal').classList.add('open')}
+function closeGuide(){document.getElementById('guideModal').classList.remove('open');document.getElementById('welcome').classList.add('hide')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+
+function showScreen(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));
+ if(id==='strategy')renderStrategy();
+ if(id==='calendar')renderCalendar();
+ if(id==='reflection')renderReflectionList();
+ if(id==='settings'){renderSubjectSettings();document.getElementById('countdown-period-select').value=db.countdownDisplayPeriod}
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function syncSound(v){document.getElementById('sound-toggle').checked=v;document.getElementById('sound-toggle-settings').checked=v;localStorage.setItem('studyLogSound',v?'1':'0')}
+function saveSound(){syncSound(document.getElementById('sound-toggle').checked)}
+
+function renderSubjectButtons(){
+ const root=document.getElementById('subject-buttons');root.innerHTML='';
+ db.subjects.forEach(s=>{
+  const b=document.createElement('button');b.className='subject-btn'+(s.id===currentSubject?' active':'');b.style.borderColor=s.color;
+  b.innerHTML=`<span>${escapeHTML(s.icon)}</span>${escapeHTML(s.name)}`;b.onclick=()=>{if(isRunning)return;currentSubject=s.id;renderSubjectButtons()};root.appendChild(b)
+ })
+}
+function renderSubjectSettings(){
+ const root=document.getElementById('setting-list');root.innerHTML='';
+ db.subjects.forEach((s,i)=>{
+  const d=document.createElement('div');d.className='setting-item';d.style.borderColor=s.color;
+  d.innerHTML=`<input class="color" type="color" value="${escapeHTML(s.color)}"><input type="text" value="${escapeHTML(s.name)}"><button class="danger">削除</button>`;
+  d.querySelector('.color').onchange=e=>updateSub(i,'color',e.target.value);
+  d.querySelector('input[type=text]').onchange=e=>updateSub(i,'name',e.target.value);
+  d.querySelector('.danger').onclick=()=>removeSub(i);root.appendChild(d)
+ })
+}
+function updateSub(i,f,v){db.subjects[i][f]=v;save();renderSubjectButtons();renderSubjectSettings();renderTimeGrid();updateChart();renderStrategy()}
+function addSub(){db.subjects.push({id:'sub_'+Date.now(),name:'新しい教科',color:'#ffc8dd',icon:'✏️'});save();renderSubjectButtons();renderSubjectSettings();renderTimeGrid();updateChart();renderStrategy()}
+function removeSub(i){
+ if(db.subjects.length<=1)return alert('教科は1つ以上必要です。');
+ const s=db.subjects[i];if(!confirm(`「${s.name}」を削除しますか？\n既存の記録は残りますが、教科一覧から非表示になります。`))return;
+ if(currentSubject===s.id)currentSubject=db.subjects[i===0?1:0].id;
+ db.subjects.splice(i,1);save();renderSubjectButtons();renderSubjectSettings();renderTimeGrid();updateChart();renderStrategy()
+}
+
+function initTimer(min){if(isRunning)return;presetSeconds=min*60;timerSeconds=presetSeconds;updateTimerDisplay();document.getElementById('timer-status').innerText='停止中'}
+function updateTimerDisplay(){const m=Math.floor(timerSeconds/60),s=timerSeconds%60;document.getElementById('timer-display').innerText=`00:${pad(m)}:${pad(s)}`}
+function toggleTimer(){
+ initAudio();const btn=document.getElementById('start-btn'),status=document.getElementById('timer-status');
+ if(!isRunning){
+  if(timerSeconds<=0)return;
+  isRunning=true;btn.innerText='■ STOP';status.innerText=`測定中：${db.subjects.find(s=>s.id===currentSubject)?.name||''}`;
+  timerInterval=setInterval(()=>{timerSeconds--;if(timerSeconds<=0){playAlertSound();recordTime(presetSeconds);timerSeconds=presetSeconds}updateTimerDisplay()},1000)
+ }else{
+  clearInterval(timerInterval);timerInterval=null;isRunning=false;btn.innerText='▶ START';status.innerText='停止中';recordTime(presetSeconds-timerSeconds)
+ }
+}
+function resetTimer(){if(isRunning)return;timerSeconds=presetSeconds;updateTimerDisplay();document.getElementById('timer-status').innerText='停止中'}
+function recordTime(sec){
+ if(sec<=0)return;const today=dateKey();if(!db.history[today])db.history[today]={};db.history[today][currentSubject]=(db.history[today][currentSubject]||0)+sec;save();renderCalendar();renderTimeGrid();updateChart();renderHomeStats();renderStrategy()
+}
+
+function totalForDate(key){return Object.values(db.history[key]||{}).reduce((a,b)=>a+(Number(b)||0),0)}
+function renderHomeStats(){
+ const today=dateKey(),logs=db.history[today]||{},total=Math.floor(totalForDate(today)/60);
+ document.getElementById('todayTotal').innerText=`${total}分`;
+ const root=document.getElementById('todayBreakdown');root.innerHTML='';
+ db.subjects.filter(s=>logs[s.id]).forEach(s=>{const d=document.createElement('div');d.className='badge';d.innerHTML=`${escapeHTML(s.icon)} ${escapeHTML(s.name)}<br><strong>${Math.floor(logs[s.id]/60)}分</strong>`;root.appendChild(d)});
+ if(!root.children.length)root.innerHTML='<div class="badge" style="grid-column:1/-1">まだ記録がありません</div>';
+ renderHomeProgress()
+}
+function renderTimeGrid(){
+ const key=dateKey(),logs=db.history[key]||{},root=document.getElementById('time-grid-root'),c=document.getElementById('live-counters');
+ let counter='';
+ db.subjects.forEach(s=>{counter+=`<div class="badge">${escapeHTML(s.icon)} ${escapeHTML(s.name)}<br><strong style="color:${escapeHTML(s.color)}">${Math.floor((logs[s.id]||0)/60)}分</strong></div>`});
+ c.innerHTML=counter||'<div class="badge">記録なし</div>';
+ let h='<table class="time-table"><tr><th>教科</th>'+Array.from({length:15},(_,i)=>`<th>${i+1}</th>`).join('')+'<th>合計</th></tr>';
+ db.subjects.forEach(s=>{const sec=logs[s.id]||0,blocks=Math.floor(sec/900);h+=`<tr><td><strong>${escapeHTML(s.name)}</strong></td>`;for(let j=1;j<=15;j++)h+=`<td><div class="fill" style="background:${j<=blocks?escapeHTML(s.color):'transparent'}"></div></td>`;h+=`<td><strong>${Math.floor(sec/60)}分</strong></td></tr>`});
+ root.innerHTML=h+'</table>'
+}
+
+function updateChart(){
+ if(!radarChart)return;const today=dateKey();radarChart.data.labels=db.subjects.map(s=>s.name);radarChart.data.datasets[0].data=db.subjects.map(s=>Math.floor((db.history[today]?.[s.id]||0)/60));radarChart.update()
+}
+
+function updateTaskPeriodSelect(){
+ const s=document.getElementById('task-test-period-select');s.innerHTML='<option value="default">通常のやることリスト</option>';
+ db.testPeriods.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=t.name;s.appendChild(o)});
+ if([...s.options].some(o=>o.value===selectedTaskPeriodId))s.value=selectedTaskPeriodId;else selectedTaskPeriodId='default'
+}
+function getTaskSource(){if(selectedTaskPeriodId==='default')return db.tasks;db.periodTasks[selectedTaskPeriodId]??={};return db.periodTasks[selectedTaskPeriodId]}
+function calcProgress(source,sid){const arr=source[sid]||[];let done=0,total=0;arr.forEach(t=>{for(let r=0;r<(db.globalRepGoal||3);r++){total++;if(t?.checks?.[r])done++}});return {done,total}}
+function renderStrategy(){
+ updateTaskPeriodSelect();const source=getTaskSource(),root=document.getElementById('task-container'),progress=document.getElementById('strategy-progress');root.innerHTML='';
+ let summary='';
+ db.subjects.forEach(s=>{const p=calcProgress(source,s.id);if(p.total)summary+=`<div class="progress-row"><div class="progress-label"><span>${escapeHTML(s.icon)} ${escapeHTML(s.name)}</span><span>${p.done}/${p.total}</span></div><div class="bar"><i style="width:${p.total?Math.round(p.done/p.total*100):0}%"></i></div></div>`});
+ progress.innerHTML=summary||'<p class="small">範囲を入力すると、ここに進捗が表示されます。</p>';
+ db.subjects.forEach(s=>{
+  const g=document.createElement('div');g.className='task-group';g.innerHTML=`<h3>${escapeHTML(s.icon)} ${escapeHTML(s.name)}</h3>`;
+  for(let i=0;i<5;i++){
+   const t=source[s.id]?.[i]||{name:'',checks:[]},row=document.createElement('div');row.className='task-row';
+   const inp=document.createElement('input');inp.type='text';inp.placeholder='範囲を入力';inp.value=t.name||'';inp.onchange=e=>updateTaskName(s.id,i,e.target.value);row.appendChild(inp);
+   const checks=document.createElement('div');checks.className='checks';
+   for(let r=0;r<(db.globalRepGoal||3);r++){const b=document.createElement('button');b.className='check'+(t.checks?.[r]?' checked':'');b.onclick=()=>toggleCheck(s.id,i,r);checks.appendChild(b)}
+   row.appendChild(checks);g.appendChild(row)
+  }root.appendChild(g)
+ })
+}
+function switchTaskPeriod(v){selectedTaskPeriodId=v;renderStrategy()}
+function setGlobalRep(n){db.globalRepGoal=n;save();renderStrategy()}
+function updateTaskName(sid,i,val){const src=getTaskSource();src[sid]??=[];src[sid][i]??={name:'',checks:[]};src[sid][i].name=val;save();renderStrategy()}
+function toggleCheck(sid,i,r){const src=getTaskSource();src[sid]??=[];src[sid][i]??={name:'',checks:[]};src[sid][i].checks??=[];src[sid][i].checks[r]=!src[sid][i].checks[r];save();renderStrategy()}
+function saveAndCloseTasks(){save();renderHomeStats();showScreen('home')}
+
+function updateTestDate(v){db.testDate=v;save();updateCountdown()}
+function updateCountdown(){
+ const d=document.getElementById('countdownDisplay'),name=document.getElementById('nextTestName'),date=document.getElementById('nextTestDate');
+ let next=null;
+ if(db.testDate)next={name:'設定したテスト',date:db.testDate};
+ const future=db.testPeriods.filter(t=>t.start).sort((a,b)=>a.start.localeCompare(b.start)).find(t=>t.start>=dateKey());
+ if(future && (!next||future.start<next.date))next={name:future.name,date:future.start};
+ if(!next){name.innerText='テストを設定してください';d.innerText='テスト日を設定';date.innerText='';return}
+ name.innerText=next.name;date.innerText=next.date.replaceAll('-','/');
+ const diff=Math.floor((parseDateKey(next.date)-parseDateKey(dateKey()))/86400000);
+ d.innerText=diff>0?`あと ${diff} 日！`:diff===0?'🎉 テスト当日！':'テスト終了！';
+ document.getElementById('test-date-picker').value=db.testDate||''
+}
+
+function renderCalendar(){
+ const grid=document.getElementById('cal-grid');grid.innerHTML='';const y=calViewDate.getFullYear(),m=calViewDate.getMonth();
+ document.getElementById('cal-month-title').innerText=`${y}年 ${m+1}月`;
+ const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();for(let i=0;i<first;i++)grid.appendChild(document.createElement('div'));
+ for(let d=1;d<=last;d++){
+  const dt=new Date(y,m,d),key=dateKey(dt),el=document.createElement('button');el.className='cal-day';el.textContent=d;el.onclick=()=>openDayDetail(key);
+  if(key===dateKey())el.classList.add('today');if(db.history[key])el.classList.add('has-data');
+  let test=false,cls='';
+  db.testPeriods.forEach(t=>{const s=parseDateKey(t.start),e=parseDateKey(t.end);s.setHours(0,0,0,0);e.setHours(23,59,59,999);const diff=Math.round((dt-s)/86400000);if(dt>=s&&dt<=e)test=true;else if(diff>=-7&&diff<=-1&&db.countdownDisplayPeriod>=1)cls='w1';else if(diff>=-14&&diff<=-8&&db.countdownDisplayPeriod>=2&&!cls)cls='w2';else if(diff>=-21&&diff<=-15&&db.countdownDisplayPeriod>=3&&!cls)cls='w3'});
+  if(test)el.classList.add('test');else if(cls)el.classList.add(cls);grid.appendChild(el)
+ }
+}
+function changeMonth(n){calViewDate.setMonth(calViewDate.getMonth()+n);renderCalendar()}
+function openDayDetail(key){
+ const logs=db.history[key]||{},d=parseDateKey(key),total=Math.floor(totalForDate(key)/60);
+ let month=0;Object.keys(db.history).forEach(k=>{const x=parseDateKey(k);if(x.getFullYear()===d.getFullYear()&&x.getMonth()===d.getMonth())month+=totalForDate(k)});
+ let h=`<div class="card"><div class="stat-big">${total}分</div><p>この日の勉強時間</p></div><div class="card"><h3>📚 教科別</h3>`;
+ let has=false;db.subjects.forEach(s=>{if(logs[s.id]){has=true;h+=`<p><strong style="color:${escapeHTML(s.color)}">${escapeHTML(s.icon)} ${escapeHTML(s.name)}</strong>：${Math.floor(logs[s.id]/60)}分</p>`}});if(!has)h+='<p class="small">この日の勉強記録はありません。</p>';h+=`</div><div class="card"><h3>📅 ${d.getMonth()+1}月の累計</h3><div class="stat-big" style="color:var(--blue2)">${Math.floor(month/60)}分</div></div>`;
+ document.getElementById('day-title').innerText=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日の記録`;document.getElementById('day-content').innerHTML=h;document.getElementById('dayModal').classList.add('open')
+}
+
+function addTestPeriod(){
+ const n=document.getElementById('test-period-name').value.trim(),s=document.getElementById('test-start').value,e=document.getElementById('test-end').value;
+ if(!n||!s||!e)return alert('テスト名・開始日・終了日を入力してください。');
+ if(e<s)return alert('終了日は開始日以降にしてください。');
+ const t={id:`test_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name:n,start:s,end:e,reflections:{}};
+ db.testPeriods.push(t);save();document.getElementById('test-period-name').value='';document.getElementById('test-start').value='';document.getElementById('test-end').value='';renderCalendar();updateCountdown();renderReflectionList();alert('テスト期間を登録しました。')
+}
+function updateCountdownPeriod(v){db.countdownDisplayPeriod=Number(v);save();renderCalendar()}
+function openReportModal(){renderReflectionList();document.getElementById('reportModal').classList.add('open')}
+function renderReflectionList(){
+ const root=document.getElementById('reflection-list'),modalRoot=document.getElementById('test-period-list');root.innerHTML='';modalRoot.innerHTML='';
+ if(!db.testPeriods.length){root.innerHTML='<div class="empty">まだテスト期間が登録されていません。<br>カレンダーから登録できます。</div>';modalRoot.innerHTML='<div class="empty">テスト期間を登録すると、ここから振り返りができます。</div>';return}
+ db.testPeriods.forEach(t=>{
+  const wrap=document.createElement('div');wrap.className='test-item';
+  const b=document.createElement('button');b.className='secondary open-test';b.innerHTML=`<strong>${escapeHTML(t.name)}</strong><br><span style="font-size:.75rem">${escapeHTML(t.start)} ～ ${escapeHTML(t.end)}</span>`;b.onclick=()=>openTestDetail(t.id);
+  const del=document.createElement('button');del.className='danger';del.textContent='削除';del.onclick=()=>deleteTestPeriod(t.id);wrap.append(b,del);root.appendChild(wrap);
+  modalRoot.appendChild(wrap.cloneNode(true));const last=modalRoot.lastChild;last.querySelector('.open-test').onclick=()=>openTestDetail(t.id);last.querySelector('.danger').onclick=()=>deleteTestPeriod(t.id);
+ })
+}
+function deleteTestPeriod(id){
+ const t=db.testPeriods.find(x=>x.id===id);if(!t)return;
+ if(!confirm(`「${t.name}」を削除しますか？\nこのテストの攻略タスクと振り返りも関連付けが解除されます。`))return;
+ db.testPeriods=db.testPeriods.filter(x=>x.id!==id);delete db.periodTasks[id];save();renderCalendar();renderReflectionList();updateCountdown()
+}
+function openTestDetail(id){
+ detailTestId=id;const t=db.testPeriods.find(x=>x.id===id);if(!t)return;
+ document.getElementById('detail-test-title').innerText=t.name;if(!t.reflections)t.reflections={};
+ const totals={};db.subjects.forEach(s=>totals[s.id]=0);let cur=parseDateKey(t.start);cur.setDate(cur.getDate()-21);const end=parseDateKey(t.end);
+ while(cur<=end){const k=dateKey(cur);db.subjects.forEach(s=>totals[s.id]+=(db.history[k]?.[s.id]||0));cur.setDate(cur.getDate()+1)}
+ let table='<table class="extended"><tr><th>教科</th>'+Array.from({length:120},(_,i)=>`<th>${(i+1)%5===0?i+1:''}</th>`).join('')+'<th>合計</th></tr>';
+ let refs='';
+ db.subjects.forEach(s=>{
+  const sec=totals[s.id]||0,m=Math.floor(sec/60),blocks=Math.floor(sec/900);table+=`<tr><td><strong>${escapeHTML(s.name)}</strong></td>`;for(let j=1;j<=120;j++)table+=`<td><div class="fill" style="background:${j<=blocks?escapeHTML(s.color):'transparent'}"></div></td>`;table+=`<td><strong>${m}分</strong></td></tr>`;
+  refs+=`<div class="reflection" style="border-color:${escapeHTML(s.color)}"><h3>${escapeHTML(s.icon)} ${escapeHTML(s.name)} <span class="small">(${m}分)</span></h3><textarea data-ref="${escapeHTML(s.id)}" placeholder="${escapeHTML(s.name)}のテストはどうだった？\n反省点や次への目標を書こう！">${escapeHTML(t.reflections[s.id]||'')}</textarea></div>`
+ });table+='</table>';
+ document.getElementById('period-time-grid-root').innerHTML=table;document.getElementById('detail-subject-list').innerHTML=refs;
+ document.querySelectorAll('#detail-subject-list textarea').forEach(a=>a.addEventListener('change',e=>saveReflection(detailTestId,e.target.dataset.ref,e.target.value)));
+ document.getElementById('reportModal').classList.remove('open');document.getElementById('testDetailModal').classList.add('open')
+}
+function saveReflection(id,sid,v){const t=db.testPeriods.find(x=>x.id===id);if(!t)return;t.reflections??={};t.reflections[sid]=v;save()}
+function closeTestDetail(){document.getElementById('testDetailModal').classList.remove('open');showScreen('reflection')}
+
+function boot(){
+ const snd=localStorage.getItem('studyLogSound');if(snd!==null){document.getElementById('sound-toggle').checked=snd==='1';document.getElementById('sound-toggle-settings').checked=snd==='1'}
+ document.getElementById('countdown-period-select').value=db.countdownDisplayPeriod;
+ renderSubjectButtons();renderSubjectSettings();renderHomeStats();renderTimeGrid();renderCalendar();renderStrategy();renderReflectionList();updateCountdown();
+ radarChart=new Chart(document.getElementById('radarChart'),{type:'radar',data:{labels:[],datasets:[{label:'分',data:[],backgroundColor:'rgba(255,175,204,.4)',borderColor:'#ff8fab'}]},options:{responsive:true,scales:{r:{beginAtZero:true}}}});
+ updateChart();document.querySelector('.nav button[data-screen="home"]').classList.add('active');
+}
+window.addEventListener('load',boot);
+</script>
+</body>
+</html>
